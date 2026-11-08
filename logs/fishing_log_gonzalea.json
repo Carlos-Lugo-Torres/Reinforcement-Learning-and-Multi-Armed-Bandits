@@ -1,0 +1,571 @@
+{
+  "game": "fishing-season",
+  "version": "2.2",
+  "student_id": "gonzalea",
+  "bay_seed": 3321990824,
+  "started_at": "2026-10-17T11:52:23.606Z",
+  "finished_at": "2026-10-17T12:32:59.874Z",
+  "sd": 2.5,
+  "spots": [
+    "Old Pier",
+    "Rocky Point",
+    "Seagrass Bed",
+    "Deep Channel",
+    "Lighthouse Reef"
+  ],
+  "rounds": [
+    {
+      "round": 1,
+      "key": "standard",
+      "days": 30,
+      "shift_day": null,
+      "total_kg": 256.3,
+      "strategy_note": "I start tested each fishing spot to get a comparison. And Lighthouse Reef showed me a mush higher kg of fish, so I decided to finish the season in that spot",
+      "note_written_at": "2026-10-17T12:09:59.890Z",
+      "choices": [
+        {
+          "day": 1,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 5.1,
+          "decision_ms": 248700
+        },
+        {
+          "day": 2,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 5,
+          "decision_ms": 63600
+        },
+        {
+          "day": 3,
+          "spot": 2,
+          "spot_name": "Seagrass Bed",
+          "catch_kg": 5.6,
+          "decision_ms": 63000
+        },
+        {
+          "day": 4,
+          "spot": 3,
+          "spot_name": "Deep Channel",
+          "catch_kg": 3.3,
+          "decision_ms": 25200
+        },
+        {
+          "day": 5,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 8.9,
+          "decision_ms": 59300
+        },
+        {
+          "day": 6,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 10.1,
+          "decision_ms": 42500
+        },
+        {
+          "day": 7,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 8.6,
+          "decision_ms": 30500
+        },
+        {
+          "day": 8,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 9.2,
+          "decision_ms": 81800
+        },
+        {
+          "day": 9,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 11.5,
+          "decision_ms": 11600
+        },
+        {
+          "day": 10,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 7.3,
+          "decision_ms": 6200
+        },
+        {
+          "day": 11,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 10.8,
+          "decision_ms": 12700
+        },
+        {
+          "day": 12,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 6.8,
+          "decision_ms": 13900
+        },
+        {
+          "day": 13,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 9.6,
+          "decision_ms": 9700
+        },
+        {
+          "day": 14,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 11.5,
+          "decision_ms": 6300
+        },
+        {
+          "day": 15,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 10.1,
+          "decision_ms": 7100
+        },
+        {
+          "day": 16,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 10.5,
+          "decision_ms": 10400
+        },
+        {
+          "day": 17,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 11.4,
+          "decision_ms": 11000
+        },
+        {
+          "day": 18,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 7.5,
+          "decision_ms": 6400
+        },
+        {
+          "day": 19,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 8.5,
+          "decision_ms": 7000
+        },
+        {
+          "day": 20,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 10.2,
+          "decision_ms": 4700
+        },
+        {
+          "day": 21,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 9.9,
+          "decision_ms": 9800
+        },
+        {
+          "day": 22,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 8.2,
+          "decision_ms": 6300
+        },
+        {
+          "day": 23,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 8,
+          "decision_ms": 4900
+        },
+        {
+          "day": 24,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 4,
+          "decision_ms": 5400
+        },
+        {
+          "day": 25,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 7.9,
+          "decision_ms": 7400
+        },
+        {
+          "day": 26,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 7.3,
+          "decision_ms": 5500
+        },
+        {
+          "day": 27,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 9.4,
+          "decision_ms": 16100
+        },
+        {
+          "day": 28,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 11.5,
+          "decision_ms": 7300
+        },
+        {
+          "day": 29,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 10.4,
+          "decision_ms": 5000
+        },
+        {
+          "day": 30,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 8.2,
+          "decision_ms": 5000
+        }
+      ],
+      "true_means": [
+        8.8,
+        4.7,
+        5,
+        3.1,
+        8.9
+      ],
+      "true_means_after_shift": null
+    },
+    {
+      "round": 2,
+      "key": "short",
+      "days": 10,
+      "shift_day": null,
+      "total_kg": 73.7,
+      "strategy_note": "The season lasted only 10 days, so I sampled three spots at random and compare the kg of fish, and I only click on the spot that give me more kg for the other 7 days",
+      "note_written_at": "2026-10-17T12:20:31.169Z",
+      "choices": [
+        {
+          "day": 1,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 3.8,
+          "decision_ms": 245400
+        },
+        {
+          "day": 2,
+          "spot": 2,
+          "spot_name": "Seagrass Bed",
+          "catch_kg": 6.5,
+          "decision_ms": 23700
+        },
+        {
+          "day": 3,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 8.7,
+          "decision_ms": 57300
+        },
+        {
+          "day": 4,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 9.9,
+          "decision_ms": 29000
+        },
+        {
+          "day": 5,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 7.5,
+          "decision_ms": 20500
+        },
+        {
+          "day": 6,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 7.3,
+          "decision_ms": 10500
+        },
+        {
+          "day": 7,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 6,
+          "decision_ms": 4600
+        },
+        {
+          "day": 8,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 4.3,
+          "decision_ms": 5400
+        },
+        {
+          "day": 9,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 8.5,
+          "decision_ms": 4300
+        },
+        {
+          "day": 10,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 11.2,
+          "decision_ms": 5300
+        }
+      ],
+      "true_means": [
+        8.7,
+        8.8,
+        7.9,
+        5.5,
+        5.1
+      ],
+      "true_means_after_shift": null
+    },
+    {
+      "round": 3,
+      "key": "changing",
+      "days": 30,
+      "shift_day": 16,
+      "total_kg": 227.4,
+      "strategy_note": "I started with the same strategy as Season 1, but around the day 21 the catches dropped, I waited for five more days to see if the improved, but they didn't, so I switched to another spot, which significantly improved my catches for the remaining five days.",
+      "note_written_at": "2026-10-17T12:32:59.537Z",
+      "choices": [
+        {
+          "day": 1,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 10,
+          "decision_ms": 3500
+        },
+        {
+          "day": 2,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 6.7,
+          "decision_ms": 42700
+        },
+        {
+          "day": 3,
+          "spot": 2,
+          "spot_name": "Seagrass Bed",
+          "catch_kg": 5.1,
+          "decision_ms": 34000
+        },
+        {
+          "day": 4,
+          "spot": 3,
+          "spot_name": "Deep Channel",
+          "catch_kg": 2.5,
+          "decision_ms": 22900
+        },
+        {
+          "day": 5,
+          "spot": 4,
+          "spot_name": "Lighthouse Reef",
+          "catch_kg": 5,
+          "decision_ms": 22100
+        },
+        {
+          "day": 6,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 10.4,
+          "decision_ms": 42300
+        },
+        {
+          "day": 7,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 10.6,
+          "decision_ms": 10500
+        },
+        {
+          "day": 8,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 9.5,
+          "decision_ms": 10200
+        },
+        {
+          "day": 9,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 10.7,
+          "decision_ms": 5700
+        },
+        {
+          "day": 10,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 8.2,
+          "decision_ms": 4500
+        },
+        {
+          "day": 11,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 12.5,
+          "decision_ms": 18100
+        },
+        {
+          "day": 12,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 10.6,
+          "decision_ms": 6100
+        },
+        {
+          "day": 13,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 5.5,
+          "decision_ms": 5500
+        },
+        {
+          "day": 14,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 12.5,
+          "decision_ms": 4200
+        },
+        {
+          "day": 15,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 14,
+          "decision_ms": 4600
+        },
+        {
+          "day": 16,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 8.5,
+          "decision_ms": 3600
+        },
+        {
+          "day": 17,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 8.8,
+          "decision_ms": 3400
+        },
+        {
+          "day": 18,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 5.1,
+          "decision_ms": 4400
+        },
+        {
+          "day": 19,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 10,
+          "decision_ms": 2900
+        },
+        {
+          "day": 20,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 4.7,
+          "decision_ms": 3700
+        },
+        {
+          "day": 21,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 0.5,
+          "decision_ms": 5700
+        },
+        {
+          "day": 22,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 2.9,
+          "decision_ms": 19200
+        },
+        {
+          "day": 23,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 3.4,
+          "decision_ms": 5600
+        },
+        {
+          "day": 24,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 3.8,
+          "decision_ms": 6400
+        },
+        {
+          "day": 25,
+          "spot": 0,
+          "spot_name": "Old Pier",
+          "catch_kg": 3.8,
+          "decision_ms": 23700
+        },
+        {
+          "day": 26,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 12.2,
+          "decision_ms": 14300
+        },
+        {
+          "day": 27,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 7.5,
+          "decision_ms": 7200
+        },
+        {
+          "day": 28,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 9,
+          "decision_ms": 6200
+        },
+        {
+          "day": 29,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 7,
+          "decision_ms": 4100
+        },
+        {
+          "day": 30,
+          "spot": 1,
+          "spot_name": "Rocky Point",
+          "catch_kg": 6.4,
+          "decision_ms": 4000
+        }
+      ],
+      "true_means": [
+        9.6,
+        6.2,
+        3.9,
+        3.9,
+        5.2
+      ],
+      "true_means_after_shift": [
+        5.6,
+        9.7,
+        7.1,
+        9.6,
+        8.3
+      ]
+    }
+  ]
+}
