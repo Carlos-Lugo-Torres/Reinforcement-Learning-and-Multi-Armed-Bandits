@@ -202,5 +202,42 @@ class EpsilonGreedyAlphaAgent(Agent):
             step = self.alpha
         self.Q[spot] += step * (catch - self.Q[spot])
 
+class UCBAgent(Agent):
+    """
+    Parameters:
+    c : float
+        Exploration parameter for the UCB algorithm.
+
+    Memory:
+    Q: estimated average catch for each spot. 
+    N: number of times each spot has been fished.
+    t: number of days played in the season.
+
+    How it chooses:
+    Spots never fished are tried first, once each.
+    Then, each day, it chooses the spot with the highest upper confidence bound (UCB).
+    """
+
+    def __init__(self, c=1.0, n_spots=5, seed=None):
+        super().__init__(n_spots, seed)
+        self.c = c
+
+    def reset(self):
+        self.Q = np.zeros(self.n_spots)
+        self.N = np.zeros(self.n_spots)
+        self.t = 0
+
+    def choose(self):
+        self.t += 1
+        untried = np.flatnonzero(self.N == 0)
+        if len(untried) > 0:
+            return int(untried[0])
+        bonus = self.c * np.sqrt(np.log(self.t) / self.N)
+        return int(np.argmax(self.Q + bonus))
+
+    def update(self, spot, catch):
+        self.N[spot] += 1
+        self.Q[spot] += (catch - self.Q[spot]) / self.N[spot]
+
 # Task 6 (optional): add your contextual agents below, as subclasses of
 # ContextualAgent.
