@@ -158,7 +158,49 @@ class HumanRuleAgent(Agent):
 # Task 4: add below at least two agents implementing methods from the reading
 # (Sutton and Barto, Chapter 2), as subclasses of Agent. Document each class:
 # what it keeps in memory, how it chooses, what its parameters mean.
+class EpsilonGreedyAlphaAgent(Agent):
+    """
+    Parameters:
+    epsilon : float
+        Probability of choosing a random spot (exploration).
+    alpha : float
+        Step-size parameter for updating the estimated values.
 
+    Memory:
+    Q: estimated average catch for each spot. 
+    N: number of times each spot has been fished.
+
+    How it chooses:
+    Spots never fished are tried first, once each.
+    Then, each day, with probability epsilon it fishes a spot chosen uniformly at random otherwise it fishes the spot with the highest Q.
+    """
+
+    def __init__(self, epsilon=0.1, alpha=0.5, n_spots=5, seed=None):
+        super().__init__(n_spots, seed)
+        self.epsilon = epsilon
+        self.alpha = alpha
+
+    def reset(self):
+        self.Q = np.zeros(self.n_spots)
+        self.N = np.zeros(self.n_spots)
+
+    def choose(self):
+        untried = np.flatnonzero(self.N == 0)
+        if len(untried) > 0:
+            return int(untried[0])
+        if self.rng.random() < self.epsilon:
+            return int(self.rng.integers(self.n_spots))
+        return int(np.argmax(self.Q))
+
+    def update(self, spot, catch):
+        self.N[spot] += 1
+        if self.N[spot] == 1:
+            step = 1.0
+        elif self.alpha is None:
+            step = 1.0 / self.N[spot]
+        else:
+            step = self.alpha
+        self.Q[spot] += step * (catch - self.Q[spot])
 
 # Task 6 (optional): add your contextual agents below, as subclasses of
 # ContextualAgent.
