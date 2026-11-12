@@ -172,7 +172,7 @@ class EpsilonGreedyAlphaAgent(Agent):
 
     How it chooses:
     Spots never fished are tried first, once each.
-    Then, each day, with probability epsilon it fishes a spot chosen uniformly at random otherwise it fishes the spot with the highest Q.
+    Then, each day, with probability epsilon it fishes a spot chosen uniformly at random, otherwise it fishes the spot with the highest Q.
     """
 
     def __init__(self, epsilon=0.1, alpha=0.5, n_spots=5, seed=None):
@@ -181,10 +181,12 @@ class EpsilonGreedyAlphaAgent(Agent):
         self.alpha = alpha
 
     def reset(self):
+        """Called once at the start of every season. Clear what the agent learned."""
         self.Q = np.zeros(self.n_spots)
         self.N = np.zeros(self.n_spots)
 
     def choose(self):
+        """Return the spot to fish today, depending on the exploration strategy"""
         untried = np.flatnonzero(self.N == 0)
         if len(untried) > 0:
             return int(untried[0])
@@ -193,6 +195,7 @@ class EpsilonGreedyAlphaAgent(Agent):
         return int(np.argmax(self.Q))
 
     def update(self, spot, catch):
+        """Called after each day with the spot chosen and the catch observed."""
         self.N[spot] += 1
         if self.N[spot] == 1:
             step = 1.0
@@ -223,11 +226,13 @@ class UCBAgent(Agent):
         self.c = c
 
     def reset(self):
+        """Called once at the start of every season. Clear what the agent learned."""
         self.Q = np.zeros(self.n_spots)
         self.N = np.zeros(self.n_spots)
         self.t = 0
 
     def choose(self):
+        """Return the spot to fish today, depending on the UCB strategy"""
         self.t += 1
         untried = np.flatnonzero(self.N == 0)
         if len(untried) > 0:
@@ -236,6 +241,7 @@ class UCBAgent(Agent):
         return int(np.argmax(self.Q + bonus))
 
     def update(self, spot, catch):
+        """Called after each day with the spot chosen and the catch observed."""
         self.N[spot] += 1
         self.Q[spot] += (catch - self.Q[spot]) / self.N[spot]
 
