@@ -139,20 +139,74 @@ class RandomContextualAgent(ContextualAgent):
 
 
 class HumanRuleAgent(Agent):
-    """Task 4: the best human strategy identified in Part II, written as a rule.
+    """Task 4: the best human strategy of our team (Gonzalea's), written as a rule.
 
-    Describe the rule here, precisely enough that someone could apply it by hand.
-    Add constructor parameters if your rule has any (call super().__init__ first).
+    Rule (can be applied by hand)
+    -----------------------------
+    1. Days 1 to 5 (discovery): fish each spot once, in order 0, 1, 2, 3, 4.
+    2. Commit to the spot with the highest average catch (ties: lowest spot number).
+    3. Every following day, fish the current spot. A catch is "bad" if it is below
+       that spot's own average (before adding the catch). Count the bad catches in
+       a row; a catch that is not bad resets the count to 0.
+    4. After k bad catches in a row, switch to the spot with the highest average
+       among the OTHER spots, and reset the count to 0.
+
+    With k = 6, this rule reproduces every decision Gonzalea made in Seasons 1
+    and 3 (on their bays it makes the same choices and gets the same totals).
+
+    Memory
+    ------
+    sums, counts : total catch and number of visits of each spot (average = sums / counts)
+    current      : the spot the agent is committed to (None during discovery)
+    bad_streak   : number of bad catches in a row at the current spot
+
+    Parameters
+    ----------
+    k : int
+        Patience: number of bad catches in a row before leaving the current spot.
+        Small k reacts fast but leaves good spots after bad luck; large k is
+        robust to bad luck but slow to react when the spots change (Season 3).
     """
 
+    def __init__(self, k=6, n_spots=5, seed=None):
+        super().__init__(n_spots, seed)
+        self.k = k
+
     def reset(self):
-        raise NotImplementedError("Task 4")
+        self.sums = np.zeros(self.n_spots)
+        self.counts = np.zeros(self.n_spots, dtype=int)
+        self.current = None
+        self.bad_streak = 0
 
     def choose(self):
-        raise NotImplementedError("Task 4")
+        # Discovery: go to the first spot not visited yet (so spots 0, 1, 2, 3, 4)
+        unvisited = np.flatnonzero(self.counts == 0)
+        if len(unvisited) > 0:
+            return int(unvisited[0])
+        # End of discovery: commit to the spot with the best average
+        if self.current is None:
+            self.current = int(np.argmax(self.sums / self.counts))
+        return self.current
 
     def update(self, spot, catch):
-        raise NotImplementedError("Task 4")
+        # Is it a bad catch at the current spot? (compared with its average before this catch)
+        if spot == self.current:
+            average = self.sums[spot] / self.counts[spot]
+            if catch < average:
+                self.bad_streak += 1
+            else:
+                self.bad_streak = 0
+
+        # Add the catch to the spot's statistics
+        self.sums[spot] += catch
+        self.counts[spot] += 1
+
+        # Out of patience: switch to the best of the other spots
+        if self.current is not None and self.bad_streak >= self.k:
+            averages = self.sums / self.counts
+            averages[self.current] = -np.inf  # exclude the current spot
+            self.current = int(np.argmax(averages))
+            self.bad_streak = 0
 
 
 # Task 4: add below at least two agents implementing methods from the reading
