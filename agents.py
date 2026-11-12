@@ -301,3 +301,70 @@ class UCBAgent(Agent):
 
 # Task 6 (optional): add your contextual agents below, as subclasses of
 # ContextualAgent.
+
+class IgnoreConditions(ContextualAgent):
+    """Adapter to allow a standard Agent to play in a ContextualBay.
+    It ignores the morning conditions 'x' and passes only the required arguments to the underlying base agent.
+    With this class we can use any of the agents in a ContextualBay, even if they don't use the context.
+    This is useful to compare the agent without context.
+    """
+    def __init__(self, base_agent):
+        super().__init__(base_agent.n_spots)
+        self.base_agent = base_agent
+
+    def reset(self):
+        self.base_agent.reset()
+
+    def choose(self, x):
+        return self.base_agent.choose()
+
+    def update(self, x, spot, catch):
+        self.base_agent.update(spot, catch)
+
+
+class LinearRegressionAgent(ContextualAgent):
+    """Contextual Agent using Ordinary Least Squares (Linear Regression).
+
+    Memory:
+        X, Y : historical contexts (features) and catches for each spot.
+        t    : number of days played in the season.
+
+    How it chooses:
+        1. Discovery phase (first m * n_spots days): fishes each spot 'm' times round-robin to gather a solid baseline of weather data.
+        2. Exploitation: fits an exact linear regression model (Least Squares) for each spot using its historical data. Predicts the catch for the current conditions 'x' and chooses the spot with the highest expected catch.
+
+    Parameters:
+        m : int
+            Number of forced discovery days per spot before relying on the model.
+    """
+    def __init__(self, m=3, n_spots=5, seed=None):
+        super().__init__(n_spots, seed)
+        self.m = m
+
+    def reset(self):
+        self.t = 0
+        # Create a separate list for each spot to store history
+        self.X = [[] for _ in range(self.n_spots)]
+        self.Y = [[] for _ in range(self.n_spots)]
+
+    def choose(self, x):
+        # Discovery phase: ensure each spot gets exactly m visits early on
+        if self.t < self.m * self.n_spots:
+            return self.t % self.n_spots
+        
+        # Add a bias term (1.0) to the context array
+        features = np.append(x, 1.0)
+        predictions = np.zeros(self.n_spots)
+        
+        for spot in range(self.n_spots):
+            # Solve theta using exact least squares: X * theta = Y
+            theta, _, _, _ = np.linalg.lstsq(self.X[spot], self.Y[spot], rcond=None)
+            predictions[spot] = np.dot(features, theta)
+            
+        return int(np.argmax(predictions))
+
+    def update(self, x, spot, catch):
+        self.t += 1
+        features = np.append(x, 1.0)
+        self.X[spot].append(features)
+        self.Y[spot].append(catch)
