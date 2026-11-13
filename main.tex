@@ -1,0 +1,244 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}      % nice tables: \toprule, \midrule, \bottomrule
+\usepackage{subcaption}    % figures side by side
+\usepackage[hidelinks]{hyperref}
+
+\title{MALIS Project 1: Reinforcement Learning and Multi-Armed Bandits}
+\author{Carlos Lugo Torres \and Axel Castro Lara \and Emilio Gonzalez Acosta}
+\date{EURECOM -- November 2026}
+
+\begin{document}
+\maketitle
+
+% ---------------------------------------------------------------
+\section{Introduction}               % ~75 words
+% The game (5 spots, noisy catches, 3 seasons) and the goal of the report.
+\section{Introduction}
+
+In \emph{Fishing Season}, a player chooses one of five fishing spots (the arms)
+each day and observes the catch (the reward). Each spot has a hidden mean catch
+between 2 and 10\,kg, and daily catches vary around it with a standard deviation
+of 2.5\,kg. This is a multi-armed bandit: every day, the player must trade off
+exploiting the spot that looks best against exploring the others. The game has
+three seasons: 30 days, 10 days, and 30 days in which the means change on day 16.
+
+We analyze our team's play (Section~\ref{sec:human}), propose a measure that
+separates decisions from luck (Section~\ref{sec:measure}), implement our best
+human strategy and two methods from Sutton and Barto~\cite{sutton}
+(Section~\ref{sec:agents}), evaluate them on 1000 random bays per season
+(Section~\ref{sec:results}), and extend the problem to a contextual bandit
+(Section~\ref{sec:contextual}).
+
+% ---------------------------------------------------------------
+\section{Human play}
+\label{sec:human}
+
+\paragraph{Axel.} Every season I planned to use at most half of the days for
+reconnaissance, to tell ``good spots'' from ``bad spots''. Then I stayed as long
+as possible in good spots and, whenever I had a bad day, immediately changed to
+another good spot. My log sometimes shows something different, because I also
+tested how random the catches were, looking for a pattern.
+
+\paragraph{Emilio.} In Seasons 1 and 3 I tried every spot once (days 1--5) and
+then stayed at the best one, fishing Lighthouse Reef twice more in Season 1 to
+confirm it was not an outlier. In Season 2, exploring all five spots would have
+cost half the season, so I tried one spot at a time and stayed at the first one
+with a high catch. In Season 3, after 0.5\,kg at Old Pier on day 21, I waited
+five more days before switching to Rocky Point, my second best spot.
+
+\paragraph{Carlos.} I did not follow an explicit plan; looking at my choices, my
+strategy was to keep moving between the spots with good catches instead of
+committing to one, and I almost never fished the same spot two days in a row.
+In Seasons 2 and 3 I first tried every spot once; in Season 1 I mostly
+alternated between Deep Channel and Seagrass Bed. After the change in Season 3,
+I added Lighthouse Reef to the rotation once it gave 15.9\,kg on day 19.
+
+\paragraph{Rules.} We abstract these behaviours into three rules that can be
+applied to any log:
+\begin{itemize}
+  \item \textbf{R1, commit with patience $k$} (Emilio, Seasons 1 and 3; Axel):
+  fish each spot once, then commit to the spot with the highest average. A catch
+  is \emph{bad} if it is below that spot's own average; after $k$ bad catches in
+  a row, move to the other spot with the highest average.
+  \item \textbf{R2, sequential search with threshold $T$} (Emilio, Season 2):
+  try spots one at a time until a catch reaches $T$, then stay there.
+  \item \textbf{R3, rotation} (Carlos): never fish the same spot two days in a
+  row, choosing among the spots with the best catches so far.
+\end{itemize}
+
+We check each rule by replaying the logs and counting the days (from day 6) on
+which it predicts the player's choice. R1 with $k=6$ predicts all 25 of Emilio's
+choices in Seasons 1 and 3, and R1 with $k=1$ predicts 16 and 19 of Axel's 25.
+R2 with $T=8$\,kg reproduces Emilio's Season 2, and R3 never repeating a spot
+matches 63 of Carlos's 67 day-to-day choices. As Emilio obtained the best score
+in Seasons 1 and 2 (Section~\ref{sec:measure}), R1 is the strategy we implement
+as our human agent (Section~\ref{sec:agents}).
+% ---------------------------------------------------------------
+\section{Separating decisions from luck}   % ~275 words  (Task 3)
+\label{sec:measure}
+\section{Separating decisions from luck}
+\label{sec:measure}
+
+The total catch mixes decisions with two kinds of luck: the daily noise of the
+catches, and the bay itself, since some bays contain only good spots. We remove
+the first by scoring the true mean of the chosen spot instead of the catch, and
+the second by rescaling each day between the worst and the best spot:
+\begin{equation}
+  S = \frac{1}{T} \sum_{t=1}^{T}
+      \frac{\mu_t(a_t) - \min_a \mu_t(a)}{\max_a \mu_t(a) - \min_a \mu_t(a)},
+\end{equation}
+where $a_t$ is the spot chosen on day $t$ and $\mu_t$ are the true means in
+force that day (they change on day 16 of Season 3). $S=1$ means the best spot
+every day and $S=0$ the worst; a wrong choice costs in proportion to its
+distance from the best spot, and averaging over days makes seasons of different
+lengths comparable. If all means are equal, the day scores 1.
+
+To show that $S$ separates decisions from luck, we play every agent of
+Section~\ref{sec:agents} on the same 1000 random bays per season
+(Table~\ref{tab:measure}). The total catch follows the bay: for UCB in Season 1,
+its correlation with the expected catch of a random player on the same bay is
+0.62, against 0.06 for $S$. $S$ also separates good from bad decisions more
+clearly: the gap between UCB and the random agent grows from 1.6 to 3.2
+standard deviations, and UCB beats the random agent on 99\% of the bays
+according to $S$, against 96\% according to the catch. One limitation remains:
+the score of a random player still depends on the bay (correlation 0.42 in
+Season 1), because it depends on how the means are spread between the worst and
+the best spot.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lcccccc}
+\toprule
+ & \multicolumn{2}{c}{Corr.\ with bay quality (UCB)}
+ & \multicolumn{2}{c}{UCB beats Random}
+ & \multicolumn{2}{c}{Gap UCB -- Random (s.d.)} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Season & kg & $S$ & kg & $S$ & kg & $S$ \\
+\midrule
+1 & 0.62 & 0.06 & 96\% & 99\% & 1.58 & 3.23 \\
+2 & 0.68 & 0.31 & 75\% & 88\% & 0.67 & 1.34 \\
+3 & 0.62 & 0.20 & 86\% & 88\% & 1.03 & 1.56 \\
+\bottomrule
+\end{tabular}
+\caption{Total catch (kg) versus our score $S$ on 1000 random bays per season.
+Bay quality is the expected total catch of a random player on that bay.}
+\label{tab:measure}
+\end{table}
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lccccccc}
+\toprule
+ & \multicolumn{3}{c}{$S$ per season} & \multicolumn{2}{c}{Season 3}
+ & New best spot \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-6}
+ & 1 & 2 & 3 & days 1--15 & days 16--30 & first fished \\
+\midrule
+Axel   & 0.62 & 0.37 & 0.73 & 0.62 & 0.84 & never \\
+Emilio & 0.92 & 0.88 & 0.55 & 0.78 & 0.33 & day 26 \\
+Carlos & 0.59 & 0.70 & 0.43 & 0.41 & 0.45 & day 19 \\
+\midrule
+UCB (mean, 1000 bays) & 0.85 & 0.68 & 0.70 & & & \\
+\bottomrule
+\end{tabular}
+\caption{Scores of the team members on their own bays.}
+\label{tab:team}
+\end{table}
+
+\paragraph{Team.} Table~\ref{tab:team} gives our scores. In the short Season 2,
+exploring every spot costs half of the season: Axel explored the whole season and
+dropped to 0.37, while Emilio's sequential search kept 0.88. The agents show the
+same effect (UCB falls from 0.85 to 0.68), since less time is left to exploit
+what exploration found. In Season 3, all five means are redrawn on day 16, and
+the best spot changed in all our bays. Axel, who left a spot after one bad day,
+adapted fastest (0.84 after the change). Emilio stayed ten more days at Old
+Pier, which had become the worst spot, and fell from 0.78 to 0.33. Carlos found
+the new best spot on day 19, but his rotation kept him there only 4 of the last
+15 days, so his score barely changed. Committing pays when the bay is stable but
+slows the reaction to a change: this is the trade-off controlled by $k$ in our
+human agent.
+
+% ---------------------------------------------------------------
+\section{Agents}
+\label{sec:agents}
+
+All agents are subclasses of \texttt{Agent} in \texttt{agents.py}: they only
+observe the catch at the spot they chose, and \texttt{reset()} clears their
+memory at the start of each season. All three begin by fishing each spot once,
+in order, so that every spot has an estimate; ties are broken towards the lowest
+spot number.
+
+\paragraph{Human rule (R1).} \texttt{HumanRuleAgent} implements rule R1 of
+Section~\ref{sec:human}. It stores the sum and number of catches of each spot,
+the spot it is committed to, and the number of bad catches in a row at that
+spot. After the first five days it commits to the spot with the highest average,
+and it switches to the best other spot after $k$ bad catches in a row. The
+patience $k$ trades robustness to bad luck against speed of reaction to a
+change. We use $k=6$, the value that reproduces Emilio's play.
+
+\paragraph{$\varepsilon$-greedy with constant step size.}
+\texttt{EpsilonGreedyAlphaAgent} keeps an estimate $Q(a)$ and a count $N(a)$ for
+each spot~\cite[Sec.~2.2--2.5]{sutton}. Each day it fishes a random spot with
+probability $\varepsilon$, and the spot with the highest $Q$ otherwise. After a
+catch $R$ at spot $a$, it updates
+\begin{equation}
+  Q(a) \leftarrow Q(a) + \alpha \bigl( R - Q(a) \bigr).
+\end{equation}
+With a constant $\alpha$, recent catches weigh more than old ones, which lets
+the agent follow the change of Season 3; with $\alpha = 1/N(a)$
+(\texttt{alpha=None}), $Q(a)$ is the sample average. The first catch at a spot
+sets $Q(a)$ directly, which removes the bias of the initial
+value~\cite[Sec.~2.6]{sutton}. We use $\varepsilon = 0.1$ and $\alpha = 0.5$.
+
+\paragraph{Upper confidence bound (UCB).} \texttt{UCBAgent} keeps the sample
+average $Q(a)$, the count $N(a)$ and the day $t$~\cite[Sec.~2.7]{sutton}. Each
+day it fishes
+\begin{equation}
+  A_t = \arg\max_a \Bigl[ Q(a) + c \sqrt{\frac{\ln t}{N(a)}} \Bigr],
+\end{equation}
+so it explores the spots whose estimate is still uncertain (few visits) instead
+of exploring at random. The parameter $c$ sets how much it explores. Since
+catches vary with a standard deviation of 2.5\,kg, its useful scale differs
+from the book's examples; we use $c = 1$.
+
+% ---------------------------------------------------------------
+\section{Results}                     % ~400 words  (Task 5)
+\label{sec:results}
+% 1000 random bays per season: distributions (figure + table).
+% Agents vs. team members on their own bays.
+% Best agent for Season 2 and Season 3, and why.
+% Parameter study: epsilon, per season.
+
+% ---------------------------------------------------------------
+\section{Contextual bandit}           % ~200 words  (Task 6, optional)
+\label{sec:contextual}
+% Linear regression agent, comparison with UCB,
+% failure case (bay 972) and the fix (warm-up m), with its trade-off.
+
+% ---------------------------------------------------------------
+\section{Conclusion}                  % ~50 words
+
+% ===============================================================
+% Not counted in the word limit
+% ===============================================================
+\section*{Contributions}
+% What each member did.
+
+\section*{Use of AI assistants}
+% Required: which tool, what it was used for, which code it wrote.
+
+\begin{thebibliography}{9}
+\bibitem{sutton} R.~S. Sutton and A.~G. Barto,
+  \emph{Reinforcement Learning: An Introduction}, 2nd ed., MIT Press, 2018.
+\end{thebibliography}
+
+\end{document}
